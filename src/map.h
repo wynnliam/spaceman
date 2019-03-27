@@ -112,4 +112,22 @@ struct mapdef {
 */
 int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data, int* player_x, int* player_y, int* player_rot);
 
+/*
+	Cleans up all the allocated attributes of a given mapdef.
+
+	PRECONDITIONS:
+		to_clean (see ARGUMENTS) is properly allocated and initialized.
+
+	POSTCONDITIONS:
+		to_clean's attributes will be properly cleaned up.
+
+	ARGUMENTS:
+		to_clean - the mapdef to clean up.
+
+	RETURNS:
+		0 - to_clean is NULL.
+		1 - to_clean is properly cleaned up.
+*/
+int clean_mapdef(struct mapdef* to_clean);
+
 #endif

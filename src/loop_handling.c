@@ -188,4 +188,9 @@ void render(SDL_Renderer* renderer) {
 
 void clean_up() {
 	printf("Cleaning up raycaster!\n");
+
+	clean_mapdef(map);
+
+	free(map);
+	map = NULL;
 }

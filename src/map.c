@@ -442,3 +442,20 @@ int initialize_map_properties(struct mapdef* map, struct map_data* map_data) {
 
 	return 1;
 }
+
+int clean_mapdef(struct mapdef* to_clean) {
+	if(!to_clean)
+		return 0;
+
+	if(to_clean->layout) {
+		free(to_clean->layout);
+		to_clean->layout = NULL;
+	}
+
+	if(to_clean->sky_surf) {
+		SDL_FreeSurface(to_clean->sky_surf);
+		to_clean->sky_surf = NULL;
+	}
+
+	return 1;
+}
