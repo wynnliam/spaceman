@@ -90,4 +90,23 @@ int add_component(struct map_data* add_to);
 */
 int add_thing_data(struct map_data* add_to);
 
+/*
+	Frees all memory dynamically allocated in a given
+	map data. THIS DOES NOT FREE THE MAP DATA ITSELF.
+
+	PRECONDITIONS:
+		to_clear (see ARGUMENTS) must be properly allocated/initialized.
+
+	POSTCONDITIONS:
+		to_clear's memory is cleaned entirely.
+
+	ARGUMENTS:
+		to_clear - the map_data to clean up.
+
+	RETURNS:
+		1 - to_clear properly cleaned.
+		0 - to_clear was NULL.
+*/
+int clear_map_data(struct map_data* to_clear);
+
 #endif

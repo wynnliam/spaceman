@@ -4,6 +4,9 @@
 
 #include <stdlib.h>
 
+static int clear_components(struct component** head);
+static int clear_thing_data(struct thing_data** head);
+
 int add_component(struct map_data* add_to) {
 	if(!add_to)
 		return 0;
@@ -39,4 +42,59 @@ int add_thing_data(struct map_data* add_to) {
 	add_to->thing_head = to_add;
 
 	return 1;
+}
+
+int clear_map_data(struct map_data* to_clear) {
+	if(to_clear->name) {
+		free(to_clear->name);
+		to_clear->name = NULL;
+	}
+
+	if(to_clear->sky_tex) {
+		free(to_clear->sky_tex);
+		to_clear->sky_tex = NULL;
+	}
+
+	clear_components(&(to_clear->component_head));
+	clear_thing_data(&(to_clear->thing_head));
+	return 1;
+}
+
+static int clear_components(struct component** head) {
+	if(!*head)
+		return 0;
+
+	struct component* next = (*head)->next;
+
+	if((*head)->tex_0) {
+		free((*head)->tex_0);
+		(*head)->tex_0 = NULL;
+	}
+
+	if((*head)->tex_1) {
+		free((*head)->tex_1);
+		(*head)->tex_1 = NULL;
+	}
+
+	free(*head);
+	*head = next;
+
+	return clear_components(head);
+}
+
+static int clear_thing_data(struct thing_data** head) {
+	if(!*head)
+		return 0;
+
+	struct thing_data* next = (*head)->next;
+
+	if((*head)->sprite_sheet) {
+		free((*head)->sprite_sheet);
+		(*head)->sprite_sheet = NULL;
+	}
+
+	free(*head);
+	*head = next;
+
+	return clear_thing_data(head);
 }
