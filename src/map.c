@@ -46,6 +46,10 @@ int place_components_into_mapdef(struct mapdef* map, struct component* component
 */
 int initialize_map_properties(struct mapdef* map, struct map_data* map_data);
 
+void clean_walldef(struct walldef* to_clean);
+void clean_floorcieldef(struct floorcielingdef* to_clean);
+void clean_thing(struct thingdef* to_clean);
+
 int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data, int* player_x, int* player_y, int* player_rot) {
 	struct map_bounds bounds;
 
@@ -63,8 +67,12 @@ int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data,
 
 	for(i = 0; i < 100; ++i) {
 		mapdef->walls[i].path = NULL;
+		mapdef->walls[i].surf = NULL;
+
 		mapdef->floor_ceils[i].floor_path = NULL;
+		mapdef->floor_ceils[i].floor_surf = NULL;
 		mapdef->floor_ceils[i].ceil_path = NULL;
+		mapdef->floor_ceils[i].ceil_surf = NULL;
 	}
 
 	mapdef->num_wall_tex = 100;
@@ -447,6 +455,8 @@ int clean_mapdef(struct mapdef* to_clean) {
 	if(!to_clean)
 		return 0;
 
+	unsigned int i;
+
 	if(to_clean->layout) {
 		free(to_clean->layout);
 		to_clean->layout = NULL;
@@ -457,5 +467,66 @@ int clean_mapdef(struct mapdef* to_clean) {
 		to_clean->sky_surf = NULL;
 	}
 
+	for(i = 0; i < to_clean->num_wall_tex; ++i)
+		clean_walldef(&(to_clean->walls[i]));
+
+	for(i = 0; i < to_clean->num_floor_ceils; ++i)
+		clean_floorcieldef(&(to_clean->floor_ceils[i]));
+
+	for(i = 0; i < to_clean->num_things; ++i)
+		clean_thing(&(to_clean->things[i]));
+
 	return 1;
+}
+
+void clean_walldef(struct walldef* to_clean) {
+	if(!to_clean)
+		return;
+
+	if(to_clean->path) {
+		free(to_clean->path);
+		to_clean->path = NULL;
+	}
+
+	if(to_clean->surf) {
+		SDL_FreeSurface(to_clean->surf);
+		to_clean->surf = NULL;
+	}
+}
+
+void clean_floorcieldef(struct floorcielingdef* to_clean) {
+	if(!to_clean)
+		return;
+
+	if(to_clean->floor_path) {
+		free(to_clean->floor_path);
+		to_clean->floor_path = NULL;
+	}
+
+	if(to_clean->ceil_path) {
+		free(to_clean->ceil_path);
+		to_clean->ceil_path = NULL;
+	}
+
+	if(to_clean->floor_surf) {
+		SDL_FreeSurface(to_clean->floor_surf);
+		to_clean->floor_surf = NULL;
+	}
+
+	if(to_clean->ceil_surf) {
+		SDL_FreeSurface(to_clean->ceil_surf);
+		to_clean->ceil_surf = NULL;
+	}
+}
+
+void clean_thing(struct thingdef* to_clean) {
+	if(!to_clean)
+		return;
+
+	unsigned int j;
+
+	if(to_clean->surf) {
+		SDL_FreeSurface(to_clean->surf);
+		to_clean->surf = NULL;
+	}
 }
