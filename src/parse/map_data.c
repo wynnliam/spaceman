@@ -45,6 +45,9 @@ int add_thing_data(struct map_data* add_to) {
 }
 
 int clear_map_data(struct map_data* to_clear) {
+	if(!to_clear)
+		return 0;
+
 	if(to_clear->name) {
 		free(to_clear->name);
 		to_clear->name = NULL;

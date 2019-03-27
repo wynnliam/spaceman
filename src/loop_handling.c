@@ -32,6 +32,8 @@ void initialize_map(struct mapdef* map, SDL_Renderer* renderer) {
 	fclose(demo_map_file);
 
 	clear_map_data(map_data);
+
+	// TODO: Make function out of these two lines
 	free(map_data);
 	map_data = NULL;
 
@@ -56,12 +58,14 @@ void initialize(SDL_Renderer* renderer) {
 
 /*UPDATE PROCEDURES*/
 
-void update() {
+int update() {
+	int result = 1;
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		if(event.type == SDL_KEYDOWN) {
-			if(event.key.keysym.sym == SDLK_p)
-				exit(0);
+			if(event.key.keysym.sym == SDLK_p) {
+				result = 0;
+			}
 
 			if(event.key.keysym.sym == SDLK_a) {
 				player_rot += 2;
@@ -125,6 +129,7 @@ void update() {
 			update_anim_class_2(&map->things[i]);
 	}
 
+	return result;
 }
 
 void update_thing_type_0(struct mapdef* map, struct thingdef* thing) {
@@ -179,4 +184,8 @@ void render(SDL_Renderer* renderer) {
 
 	// Forces the screen to be updated.
 	SDL_RenderPresent(renderer);
+}
+
+void clean_up() {
+	printf("Cleaning up raycaster!\n");
 }

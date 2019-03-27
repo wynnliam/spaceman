@@ -15,9 +15,13 @@
 void initialize(SDL_Renderer* renderer);
 
 // Handles any non-rendering logic we need
-// per frame.
-void update();
+// per frame. Returns 1 if we want to do another
+// loop iteration, and 0 if we want to quit.
+int update();
 
 // Handles per-frame rendering logic.
 void render(SDL_Renderer* renderer);
+
+// Cleans up map data and whatnot.
+void clean_up();
 #endif

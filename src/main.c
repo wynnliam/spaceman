@@ -34,6 +34,8 @@ int main() {
 	// If true, runs the loop infinitely.
 	const int run_infinite = 1;
 
+	int keep_running_game_loop;
+
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 	window = SDL_CreateWindow("CS410p: Raycaster", 0, 0, 320, 200, 0);
@@ -48,13 +50,18 @@ int main() {
 
 	while(1) {
 		// Things like keyboard input and user movement.
-		update();
+		keep_running_game_loop = update();
 		// Do a ray-casting rendering step.
 		render(renderer);
+
+		if(!keep_running_game_loop)
+			break;
 	}
 
 	// Actually sets the rendering loop.
 	//emscripten_set_main_loop_arg(loop, &ctx, fps_count, run_infinite);
+
+	clean_up();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
