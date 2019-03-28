@@ -1,0 +1,46 @@
+./src/loop_handling.c: In function ‘load_map’:
+./src/loop_handling.c:41:9: warning: returning ‘struct mapdef *’ from a function with incompatible return type ‘struct map_data *’ [-Wincompatible-pointer-types]
+  return map;
+         ^~~
+./src/loop_handling.c: In function ‘update’:
+./src/loop_handling.c:78:9: warning: assignment to ‘struct mapdef *’ from incompatible pointer type ‘struct map_data *’ [-Wincompatible-pointer-types]
+     map = load_map("./src/assests/maps/c01.sqm");
+         ^
+./src/loop_handling.c:81:9: warning: assignment to ‘struct mapdef *’ from incompatible pointer type ‘struct map_data *’ [-Wincompatible-pointer-types]
+     map = load_map("./src/assests/maps/c02.sqm");
+         ^
+./src/loop_handling.c:84:9: warning: assignment to ‘struct mapdef *’ from incompatible pointer type ‘struct map_data *’ [-Wincompatible-pointer-types]
+     map = load_map("./src/assests/maps/c03.sqm");
+         ^
+./src/loop_handling.c:87:9: warning: assignment to ‘struct mapdef *’ from incompatible pointer type ‘struct map_data *’ [-Wincompatible-pointer-types]
+     map = load_map("./src/assests/maps/c04.sqm");
+         ^
+./src/loop_handling.c:90:9: warning: assignment to ‘struct mapdef *’ from incompatible pointer type ‘struct map_data *’ [-Wincompatible-pointer-types]
+     map = load_map("./src/assests/maps/c05.sqm");
+         ^
+./src/main.c: In function ‘main’:
+./src/main.c:35:12: warning: unused variable ‘run_infinite’ [-Wunused-variable]
+  const int run_infinite = 1;
+            ^~~~~~~~~~~~
+./src/main.c:33:12: warning: unused variable ‘fps_count’ [-Wunused-variable]
+  const int fps_count = -1;
+            ^~~~~~~~~
+./src/main.c:31:17: warning: variable ‘ctx’ set but not used [-Wunused-but-set-variable]
+  struct context ctx;
+                 ^~~
+./src/map.c: In function ‘clean_thing’:
+./src/map.c:526:15: warning: unused variable ‘j’ [-Wunused-variable]
+  unsigned int j;
+               ^
+./src/raycaster.c: In function ‘compute_lookup_vals_for_angle’:
+./src/raycaster.c:195:8: warning: unused variable ‘curr_angle’ [-Wunused-variable]
+  float curr_angle;
+        ^~~~~~~~~~
+./src/raycaster.c: In function ‘compute_initial_ray_pos’:
+./src/raycaster.c:489:6: warning: unused variable ‘alpha’ [-Wunused-variable]
+  int alpha;
+      ^~~~~
+./src/parse/parser.c: In function ‘parse_attribute’:
+./src/parse/parser.c:183:6: warning: unused variable ‘attrib_val_as_int’ [-Wunused-variable]
+  int attrib_val_as_int;
+      ^~~~~~~~~~~~~~~~~

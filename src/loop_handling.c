@@ -22,7 +22,7 @@ void update_anim_class_1(struct thingdef* thing);
 void update_anim_class_2(struct thingdef* thing);
 
 /*INITIALIZATION PROCEDURES*/
-struct map_data* load_map(const char* path) {
+struct mapdef* load_map(const char* path) {
 	if(!path)
 		return NULL;
 
@@ -94,46 +94,48 @@ int update() {
 				result = 0;
 			}
 
-			if(event.key.keysym.sym == SDLK_a) {
-				player_rot += 2;
+			if(map) {
+				if(event.key.keysym.sym == SDLK_a) {
+					player_rot += 2;
 
-				if(player_rot < 0)
-					player_rot += 360;
-				if(player_rot > 360)
-					player_rot -= 360;
-			}
-
-			if(event.key.keysym.sym == SDLK_d) {
-				player_rot -= 2;
-
-				if(player_rot < 0)
-					player_rot += 360;
-				if(player_rot > 360)
-					player_rot -= 360;
-			}
-
-			if(event.key.keysym.sym == SDLK_w) {
-				player_y -= (sin128table[player_rot] << 4) >> 7;
-				player_x += (cos128table[player_rot] << 4) >> 7;
-
-				if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
-					player_y += (sin128table[player_rot] << 4) >> 7;
-					player_x -= (cos128table[player_rot] << 4) >> 7;
+					if(player_rot < 0)
+						player_rot += 360;
+					if(player_rot > 360)
+						player_rot -= 360;
 				}
-			}
 
-			if(event.key.keysym.sym == SDLK_s) {
-				player_y += (sin128table[player_rot] << 4) >> 7;
-				player_x -= (cos128table[player_rot] << 4) >> 7;
+				if(event.key.keysym.sym == SDLK_d) {
+					player_rot -= 2;
 
-				if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
+					if(player_rot < 0)
+						player_rot += 360;
+					if(player_rot > 360)
+						player_rot -= 360;
+				}
+
+				if(event.key.keysym.sym == SDLK_w) {
 					player_y -= (sin128table[player_rot] << 4) >> 7;
 					player_x += (cos128table[player_rot] << 4) >> 7;
-				}
-			}
 
-			if(event.key.keysym.sym == SDLK_c) {
-				printf("Player position = [%d, %d]. Player rotation = %d\n", player_x, player_y, player_rot);
+					if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
+						player_y += (sin128table[player_rot] << 4) >> 7;
+						player_x -= (cos128table[player_rot] << 4) >> 7;
+					}
+				}
+
+				if(event.key.keysym.sym == SDLK_s) {
+					player_y += (sin128table[player_rot] << 4) >> 7;
+					player_x -= (cos128table[player_rot] << 4) >> 7;
+
+					if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
+						player_y -= (sin128table[player_rot] << 4) >> 7;
+						player_x += (cos128table[player_rot] << 4) >> 7;
+					}
+				}
+
+				if(event.key.keysym.sym == SDLK_c) {
+					printf("Player position = [%d, %d]. Player rotation = %d\n", player_x, player_y, player_rot);
+				}
 			}
 		}
 	}
