@@ -23,6 +23,35 @@ void update_anim_class_2(struct thingdef* thing);
 
 /*INITIALIZATION PROCEDURES*/
 
+struct map_data* load_map(const char* path) {
+	if(!path)
+		return NULL;
+
+	FILE* map_file = fopen(path, "r");
+	struct map_data* map_data = parse_to_map_data(map_file);
+	struct mapdef* map = (struct mapdef*)malloc(sizeof(struct mapdef));
+
+	build_mapdef_from_map_data(map, map_data, &player_x, &player_y, &player_rot);
+
+	fclose(map_file);
+	
+	clear_map_data(map_data);
+	free(map_data);
+	map_data = NULL;
+
+	return map;
+}
+
+void free_map(struct mapdef** map) {
+	if(!map || !(*map))
+		return;
+
+	clean_mapdef(*map);
+
+	free(*map);
+	*map = NULL;
+}
+
 // TODO: This whole function should be elsewhere.
 void initialize_map(struct mapdef* map, SDL_Renderer* renderer) {
 	FILE* demo_map_file = fopen("./src/assests/maps/c05.sqm", "r");
@@ -46,14 +75,14 @@ void initialize(SDL_Renderer* renderer) {
 	player_y = 256;
 	player_rot = 0;
 
-	map = (struct mapdef*)malloc(sizeof(struct mapdef));
-
 	// Initializes all the angle lookup tables.
 	initialize_lookup_tables();
 	// Intializes the rendering textures.
 	initialize_render_textures(renderer);
-	// Initialize the map data.
-	initialize_map(map, renderer);
+	// Enables transparent pixel 
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+	map = NULL;
 }
 
 /*UPDATE PROCEDURES*/
@@ -63,6 +92,23 @@ int update() {
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		if(event.type == SDL_KEYDOWN) {
+			if(event.key.keysym.sym == SDLK_1) {
+				free_map(&map);
+				map = load_map("./src/assests/maps/c01.sqm");
+			} else if(event.key.keysym.sym == SDLK_2) {
+				free_map(&map);
+				map = load_map("./src/assests/maps/c02.sqm");
+			} else if(event.key.keysym.sym == SDLK_3) {
+				free_map(&map);
+				map = load_map("./src/assests/maps/c03.sqm");
+			} else if(event.key.keysym.sym == SDLK_4) {
+				free_map(&map);
+				map = load_map("./src/assests/maps/c04.sqm");
+			} else if(event.key.keysym.sym == SDLK_5) {
+				free_map(&map);
+				map = load_map("./src/assests/maps/c05.sqm");
+			}
+
 			if(event.key.keysym.sym == SDLK_p) {
 				result = 0;
 			}
@@ -111,6 +157,8 @@ int update() {
 		}
 	}
 
+	if(!map)
+		return result;
 
 	int i;
 	for(i = 0; i < map->num_things; ++i) {
@@ -180,6 +228,9 @@ void render(SDL_Renderer* renderer) {
 	// cornflower blue.
 	SDL_RenderClear(renderer);
 
+	if(!map)
+		return;
+
 	cast_rays(renderer, map, player_x, player_y, player_rot);
 
 	// Forces the screen to be updated.
@@ -189,8 +240,6 @@ void render(SDL_Renderer* renderer) {
 void clean_up() {
 	printf("Cleaning up raycaster!\n");
 
-	clean_mapdef(map);
+	free_map(&map);
 
-	free(map);
-	map = NULL;
 }
