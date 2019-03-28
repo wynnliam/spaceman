@@ -22,7 +22,6 @@ void update_anim_class_1(struct thingdef* thing);
 void update_anim_class_2(struct thingdef* thing);
 
 /*INITIALIZATION PROCEDURES*/
-
 struct map_data* load_map(const char* path) {
 	if(!path)
 		return NULL;
@@ -52,24 +51,6 @@ void free_map(struct mapdef** map) {
 	*map = NULL;
 }
 
-// TODO: This whole function should be elsewhere.
-void initialize_map(struct mapdef* map, SDL_Renderer* renderer) {
-	FILE* demo_map_file = fopen("./src/assests/maps/c05.sqm", "r");
-	struct map_data* map_data = parse_to_map_data(demo_map_file);
-
-	build_mapdef_from_map_data(map, map_data, &player_x, &player_y, &player_rot);
-	fclose(demo_map_file);
-
-	clear_map_data(map_data);
-
-	// TODO: Make function out of these two lines
-	free(map_data);
-	map_data = NULL;
-
-	// Enables transparent pixel 
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-}
-
 void initialize(SDL_Renderer* renderer) {
 	player_x = 256;
 	player_y = 256;
@@ -86,7 +67,7 @@ void initialize(SDL_Renderer* renderer) {
 }
 
 /*UPDATE PROCEDURES*/
-
+// TODO: Clean up this!
 int update() {
 	int result = 1;
 	SDL_Event event;
@@ -228,10 +209,8 @@ void render(SDL_Renderer* renderer) {
 	// cornflower blue.
 	SDL_RenderClear(renderer);
 
-	if(!map)
-		return;
-
-	cast_rays(renderer, map, player_x, player_y, player_rot);
+	if(map)
+		cast_rays(renderer, map, player_x, player_y, player_rot);
 
 	// Forces the screen to be updated.
 	SDL_RenderPresent(renderer);
