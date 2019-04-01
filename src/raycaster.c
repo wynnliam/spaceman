@@ -785,26 +785,40 @@ static void draw_things() {
 
 static void project_thing_pos_onto_screen(const int thing_pos[2], int screen_pos[2]) {
 	int x_diff, y_diff;
+	// The angle between the player and the thing to render.
 	int theta_temp;
+	// The ray angle that corresponds to the x position of the center
+	// of the sprite/thing.
+	int thing_ray_angle;
 
 	x_diff = thing_pos[0] - player_x;
 	y_diff = thing_pos[1] - player_y;
-
 	theta_temp = (int)(atan2(-y_diff, x_diff) * RAD_TO_DEG);
 
 	// Make sure the angle is between 0 and 360.
 	if(theta_temp < 0)
 		theta_temp += 360;
 
-	screen_pos[1] = player_rot + FOV_HALF - theta_temp;
+	thing_ray_angle = player_rot + FOV_HALF - theta_temp;
 
+	// Corrects for case where player rotation is in quadrant 1,
+	// but angle between player and thing is in quadrant 4 (or vice-versa).
 	if(theta_temp > 270 && player_rot < 90)
-		screen_pos[1] = player_rot + FOV_HALF - theta_temp + 360;
+		thing_ray_angle += 360;
 	if(player_rot > 270 && theta_temp < 90)
-		screen_pos[1] = player_rot + FOV_HALF - theta_temp - 360;
+		thing_ray_angle -= 360;
 
-	screen_pos[0] = screen_pos[1] * PROJ_W / FOV;
-	screen_pos[1] = 100;
+	screen_pos[0] = thing_ray_angle * PROJ_W / FOV;
+
+	/*
+		We make three assumptions about sprites and the environment
+		1. Sprites are vertically centered.
+		2. Sprites are all 64 x 64 pixels
+		3. The player height is 32
+
+		Thus, the center of every sprite is at half of the projection screen height.
+	*/
+	screen_pos[1] = PROJ_H >> 1;
 }
 
 static void compute_thing_dimensions_on_screen(const int thing_sorted_index, const int screen_pos[2], SDL_Rect* thing_screen_rect) {
