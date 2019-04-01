@@ -804,6 +804,7 @@ static void project_thing_pos_onto_screen(const int thing_pos[2], int screen_pos
 		screen_pos[1] = player_rot + FOV_HALF - theta_temp - 360;
 
 	screen_pos[0] = screen_pos[1] * PROJ_W / FOV;
+	screen_pos[1] = 100;
 }
 
 static void compute_thing_dimensions_on_screen(const int thing_sorted_index, const int screen_pos[2], SDL_Rect* thing_screen_rect) {
