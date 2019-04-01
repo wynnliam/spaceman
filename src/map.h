@@ -130,4 +130,7 @@ int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data,
 */
 int clean_mapdef(struct mapdef* to_clean);
 
+struct mapdef* load_map(const char* path, int* player_x, int* player_y, int* player_rot);
+void free_map(struct mapdef** map);
+
 #endif

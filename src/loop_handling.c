@@ -22,34 +22,6 @@ void update_anim_class_1(struct thingdef* thing);
 void update_anim_class_2(struct thingdef* thing);
 
 /*INITIALIZATION PROCEDURES*/
-struct mapdef* load_map(const char* path) {
-	if(!path)
-		return NULL;
-
-	FILE* map_file = fopen(path, "r");
-	struct map_data* map_data = parse_to_map_data(map_file);
-	struct mapdef* map = (struct mapdef*)malloc(sizeof(struct mapdef));
-
-	build_mapdef_from_map_data(map, map_data, &player_x, &player_y, &player_rot);
-
-	fclose(map_file);
-	
-	clear_map_data(map_data);
-	free(map_data);
-	map_data = NULL;
-
-	return map;
-}
-
-void free_map(struct mapdef** map) {
-	if(!map || !(*map))
-		return;
-
-	clean_mapdef(*map);
-
-	free(*map);
-	*map = NULL;
-}
 
 void initialize(SDL_Renderer* renderer) {
 	player_x = 256;
@@ -75,19 +47,19 @@ int update() {
 		if(event.type == SDL_KEYDOWN) {
 			if(event.key.keysym.sym == SDLK_1) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c01.sqm");
+				map = load_map("./src/assests/maps/c01.sqm", &player_x, &player_y, &player_rot);
 			} else if(event.key.keysym.sym == SDLK_2) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c02.sqm");
+				map = load_map("./src/assests/maps/c02.sqm", &player_x, &player_y, &player_rot);
 			} else if(event.key.keysym.sym == SDLK_3) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c03.sqm");
+				map = load_map("./src/assests/maps/c03.sqm", &player_x, &player_y, &player_rot);
 			} else if(event.key.keysym.sym == SDLK_4) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c04.sqm");
+				map = load_map("./src/assests/maps/c04.sqm", &player_x, &player_y, &player_rot);
 			} else if(event.key.keysym.sym == SDLK_5) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c05.sqm");
+				map = load_map("./src/assests/maps/c05.sqm", &player_x, &player_y, &player_rot);
 			}
 
 			if(event.key.keysym.sym == SDLK_p) {

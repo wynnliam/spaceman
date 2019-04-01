@@ -54,7 +54,7 @@ static unsigned int get_pixel(SDL_Surface* surface, int x, int y) {
 			break;
 		case 2:
 			if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-			result = *(unsigned short*)(channels);
+				result = *(unsigned short*)(channels);
 			break;
 		case 3:
 			if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
