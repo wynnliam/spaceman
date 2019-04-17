@@ -41,8 +41,8 @@ void do_loop(SDL_Renderer* renderer) {
 		endTicks = SDL_GetTicks();
 		tickDiff = endTicks - startTicks;
 
-		if(tickDiff < 30)
-			SDL_Delay(30 - tickDiff);
+		if(tickDiff < IDEAL_FRAMES_PER_SECOND)
+			SDL_Delay(IDEAL_FRAMES_PER_SECOND - tickDiff);
 	}
 }
 
