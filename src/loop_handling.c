@@ -2,6 +2,7 @@
 
 #include "loop_handling.h"
 #include "raycaster.h"
+#include "map_loading.h"
 #include "./parse/parser.h"
 
 #include <stdio.h>
@@ -12,6 +13,7 @@ int player_x, player_y;
 int player_rot;
 
 // Temporary storage for map.
+unsigned int curr_level;
 struct mapdef* map;
 
 void update_thing_type_0(struct mapdef* map, struct thingdef* thing);
@@ -53,6 +55,8 @@ void initialize(SDL_Renderer* renderer) {
 	player_y = 256;
 	player_rot = 0;
 
+	// Raycaster Initialization
+
 	// Initializes all the angle lookup tables.
 	initialize_lookup_tables();
 	// Intializes the rendering textures.
@@ -60,6 +64,10 @@ void initialize(SDL_Renderer* renderer) {
 	// Enables transparent pixel 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
+	// Map Loading
+
+	initialize_map_lookup_table();
+	curr_level = 0;
 	map = NULL;
 }
 
@@ -72,7 +80,11 @@ int update() {
 		if(event.type == SDL_KEYDOWN) {
 			if(event.key.keysym.sym == SDLK_1) {
 				free_map(&map);
-				map = load_map("./src/assests/maps/c01.sqm", &player_x, &player_y, &player_rot);
+				map = load_map(do_map_lookup(curr_level), &player_x, &player_y, &player_rot);
+
+				curr_level++;
+				if(curr_level >= get_num_loaded_maps())
+					curr_level = 0;
 			} else if(event.key.keysym.sym == SDLK_2) {
 				free_map(&map);
 				map = load_map("./src/assests/maps/c02.sqm", &player_x, &player_y, &player_rot);
