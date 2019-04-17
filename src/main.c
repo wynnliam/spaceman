@@ -34,7 +34,6 @@ int main() {
 	// If true, runs the loop infinitely.
 	const int run_infinite = 1;
 
-	int keep_running_game_loop;
 
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
@@ -48,26 +47,8 @@ int main() {
 	// Initialize any non-SDL logic
 	initialize(renderer);
 
-	unsigned int startTicks, endTicks;
-	unsigned int tickDiff;
-
-	while(1) {
-		startTicks = SDL_GetTicks();
-
-		// Things like keyboard input and user movement.
-		keep_running_game_loop = update();
-		// Do a ray-casting rendering step.
-		render(renderer);
-
-		if(!keep_running_game_loop)
-			break;
-
-		endTicks = SDL_GetTicks();
-		tickDiff = endTicks - startTicks;
-
-		if(tickDiff < 30)
-			SDL_Delay(30 - tickDiff);
-	}
+	// Now run the loop.
+	do_loop(renderer);
 
 	// Actually sets the rendering loop.
 	//emscripten_set_main_loop_arg(loop, &ctx, fps_count, run_infinite);

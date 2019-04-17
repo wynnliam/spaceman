@@ -21,6 +21,31 @@ void update_anim_class_0(struct thingdef* thing);
 void update_anim_class_1(struct thingdef* thing);
 void update_anim_class_2(struct thingdef* thing);
 
+/* GAME LOOP IMPLEMENTATION */
+void do_loop(SDL_Renderer* renderer) {
+	int keep_running_game_loop;
+	unsigned int startTicks, endTicks;
+	unsigned int tickDiff;
+
+	while(1) {
+		startTicks = SDL_GetTicks();
+
+		// Things like keyboard input and user movement.
+		keep_running_game_loop = update();
+		// Do a ray-casting rendering step.
+		render(renderer);
+
+		if(!keep_running_game_loop)
+			break;
+
+		endTicks = SDL_GetTicks();
+		tickDiff = endTicks - startTicks;
+
+		if(tickDiff < 30)
+			SDL_Delay(30 - tickDiff);
+	}
+}
+
 /*INITIALIZATION PROCEDURES*/
 
 void initialize(SDL_Renderer* renderer) {

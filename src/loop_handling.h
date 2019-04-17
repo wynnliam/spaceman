@@ -11,6 +11,8 @@
 #define LOOP_HANDLER
 #include <SDL2/SDL.h>
 
+#define IDEAL_FRAMES_PER_SECOND	30
+
 // Handles any pre-loop logic we need.
 void initialize(SDL_Renderer* renderer);
 
@@ -21,6 +23,9 @@ int update();
 
 // Handles per-frame rendering logic.
 void render(SDL_Renderer* renderer);
+
+// The game loop itself
+void do_loop(SDL_Renderer* renderer);
 
 // Cleans up map data and whatnot.
 void clean_up();
