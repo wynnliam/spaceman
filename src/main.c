@@ -48,7 +48,12 @@ int main() {
 	// Initialize any non-SDL logic
 	initialize(renderer);
 
+	unsigned int startTicks, endTicks;
+	unsigned int tickDiff;
+
 	while(1) {
+		startTicks = SDL_GetTicks();
+
 		// Things like keyboard input and user movement.
 		keep_running_game_loop = update();
 		// Do a ray-casting rendering step.
@@ -56,6 +61,12 @@ int main() {
 
 		if(!keep_running_game_loop)
 			break;
+
+		endTicks = SDL_GetTicks();
+		tickDiff = endTicks - startTicks;
+
+		if(tickDiff < 30)
+			SDL_Delay(30 - tickDiff);
 	}
 
 	// Actually sets the rendering loop.
