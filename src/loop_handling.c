@@ -85,18 +85,6 @@ int update() {
 				curr_level++;
 				if(curr_level >= get_num_loaded_maps())
 					curr_level = 0;
-			} else if(event.key.keysym.sym == SDLK_2) {
-				free_map(&map);
-				map = load_map("./src/assests/maps/c02.sqm", &player_x, &player_y, &player_rot);
-			} else if(event.key.keysym.sym == SDLK_3) {
-				free_map(&map);
-				map = load_map("./src/assests/maps/c03.sqm", &player_x, &player_y, &player_rot);
-			} else if(event.key.keysym.sym == SDLK_4) {
-				free_map(&map);
-				map = load_map("./src/assests/maps/c04.sqm", &player_x, &player_y, &player_rot);
-			} else if(event.key.keysym.sym == SDLK_5) {
-				free_map(&map);
-				map = load_map("./src/assests/maps/c05.sqm", &player_x, &player_y, &player_rot);
 			}
 
 			if(event.key.keysym.sym == SDLK_p) {
