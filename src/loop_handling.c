@@ -23,7 +23,10 @@ unsigned int curr_level;
 struct mapdef* map;
 
 int update_state_in_world();
+
 int update_state_in_location();
+int resolve_map_lookup(const unsigned int map_key);
+
 int update_state_in_level();
 
 void update_thing_type_0(struct mapdef* map, struct thingdef* thing);
@@ -124,13 +127,43 @@ int update_state_in_location() {
 				curr_game_state = STATE_MAIN_WORLD;
 			} else if(event.key.keysym.sym == SDLK_1) {
 				free_map(&map);
-				map = load_map(do_map_lookup(0), &player_x, &player_y, &player_rot);
-				curr_game_state = STATE_IN_LEVEL;
+				map = load_map(do_map_lookup(resolve_map_lookup(0)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
+			} else if(event.key.keysym.sym == SDLK_2) {
+				free_map(&map);
+				map = load_map(do_map_lookup(resolve_map_lookup(1)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
+			} else if(event.key.keysym.sym == SDLK_3) {
+				free_map(&map);
+				map = load_map(do_map_lookup(resolve_map_lookup(2)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
+			} else if(event.key.keysym.sym == SDLK_4) {
+				free_map(&map);
+				map = load_map(do_map_lookup(resolve_map_lookup(3)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
+			} else if(event.key.keysym.sym == SDLK_5) {
+				free_map(&map);
+				map = load_map(do_map_lookup(resolve_map_lookup(4)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
+			} else if(event.key.keysym.sym == SDLK_6) {
+				free_map(&map);
+				map = load_map(do_map_lookup(resolve_map_lookup(5)), &player_x, &player_y, &player_rot);
+				if(map)
+					curr_game_state = STATE_IN_LEVEL;
 			}
 		}
 	}
 
 	return result;
+}
+
+int resolve_map_lookup(const unsigned int map_key) {
+	return map_key;
 }
 
 int update_state_in_level() {
@@ -265,7 +298,7 @@ void render(SDL_Renderer* renderer) {
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
 	} else if(curr_game_state == STATE_IN_LOCATION) {
-		SDL_SetRenderDrawColor(renderer, 100, 149, 237, 255);
+		SDL_SetRenderDrawColor(renderer, 100, 0, 237, 255);
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
 	} else if(curr_game_state == STATE_IN_LEVEL) {
