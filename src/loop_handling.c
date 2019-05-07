@@ -7,6 +7,12 @@
 
 #include <stdio.h>
 
+#define STATE_MAIN_WORLD 0
+#define STATE_IN_LOCATION 1
+#define STATE_IN_LEVEL 2
+
+int curr_game_state;
+
 // Stores the player 
 int player_x, player_y;
 // The player rotation.
@@ -15,6 +21,10 @@ int player_rot;
 // Temporary storage for map.
 unsigned int curr_level;
 struct mapdef* map;
+
+int update_state_in_world();
+int update_state_in_location();
+int update_state_in_level();
 
 void update_thing_type_0(struct mapdef* map, struct thingdef* thing);
 void update_thing_type_1(struct mapdef* map, struct thingdef* thing);
@@ -51,6 +61,8 @@ void do_loop(SDL_Renderer* renderer) {
 /*INITIALIZATION PROCEDURES*/
 
 void initialize(SDL_Renderer* renderer) {
+	curr_game_state = STATE_MAIN_WORLD;
+
 	player_x = 256;
 	player_y = 256;
 	player_rot = 0;
@@ -74,17 +86,62 @@ void initialize(SDL_Renderer* renderer) {
 /*UPDATE PROCEDURES*/
 // TODO: Clean up this!
 int update() {
+	if(curr_game_state == STATE_MAIN_WORLD)
+		return update_state_in_world();
+	else if(curr_game_state == STATE_IN_LOCATION)
+		return update_state_in_location();
+	else if(curr_game_state == STATE_IN_LEVEL)
+		return update_state_in_level();
+	else
+		return 0;
+}
+
+int update_state_in_world() {
 	int result = 1;
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		if(event.type == SDL_KEYDOWN) {
-			if(event.key.keysym.sym == SDLK_1) {
-				free_map(&map);
-				map = load_map(do_map_lookup(curr_level), &player_x, &player_y, &player_rot);
+			if(event.key.keysym.sym == SDLK_p) {
+				result = 0;
+			} else if(event.key.keysym.sym == SDLK_SPACE) {
+				// TODO: PROPER TRANSITIONS
+				curr_game_state = STATE_IN_LOCATION;
+			}
+		}
+	}
 
-				curr_level++;
-				if(curr_level >= get_num_loaded_maps())
-					curr_level = 0;
+	return result;
+}
+
+int update_state_in_location() {
+	int result = 1;
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		if(event.type == SDL_KEYDOWN) {
+			if(event.key.keysym.sym == SDLK_p) {
+				result = 0;
+			} else if(event.key.keysym.sym == SDLK_BACKSPACE) {
+				curr_game_state = STATE_MAIN_WORLD;
+			} else if(event.key.keysym.sym == SDLK_1) {
+				free_map(&map);
+				map = load_map(do_map_lookup(0), &player_x, &player_y, &player_rot);
+				curr_game_state = STATE_IN_LEVEL;
+			}
+		}
+	}
+
+	return result;
+}
+
+int update_state_in_level() {
+	int result = 1;
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		if(event.type == SDL_KEYDOWN) {
+			if(event.key.keysym.sym == SDLK_BACKSPACE) {
+				free_map(&map);
+				curr_game_state = STATE_IN_LOCATION;
+				return result;
 			}
 
 			if(event.key.keysym.sym == SDLK_p) {
@@ -203,16 +260,26 @@ void update_anim_class_2(struct thingdef* thing) {
 
 /*RENDERING PROCEDURES*/
 void render(SDL_Renderer* renderer) {
-	SDL_SetRenderDrawColor(renderer, 100, 149, 237, 255);
-	// Fills the screen with the current render draw color, which is
-	// cornflower blue.
-	SDL_RenderClear(renderer);
+	if(curr_game_state == STATE_MAIN_WORLD) {
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderPresent(renderer);
+	} else if(curr_game_state == STATE_IN_LOCATION) {
+		SDL_SetRenderDrawColor(renderer, 100, 149, 237, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderPresent(renderer);
+	} else if(curr_game_state == STATE_IN_LEVEL) {
+		SDL_SetRenderDrawColor(renderer, 100, 149, 237, 255);
+		// Fills the screen with the current render draw color, which is
+		// cornflower blue.
+		SDL_RenderClear(renderer);
 
-	if(map)
-		cast_rays(renderer, map, player_x, player_y, player_rot);
+		if(map)
+			cast_rays(renderer, map, player_x, player_y, player_rot);
 
-	// Forces the screen to be updated.
-	SDL_RenderPresent(renderer);
+		// Forces the screen to be updated.
+		SDL_RenderPresent(renderer);
+	}
 }
 
 void clean_up() {
