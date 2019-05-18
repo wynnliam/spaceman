@@ -47,7 +47,7 @@ int initialize_map_lookup_table() {
 }
 
 char* do_map_lookup(unsigned int index) {
-	if(map_lookup_table_size == 0 || index > map_lookup_table_size)
+	if(map_lookup_table_size == 0 || index >= map_lookup_table_size)
 		return NULL;
 
 	return map_lookup_table[index];
