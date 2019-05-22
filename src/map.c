@@ -68,6 +68,7 @@ int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data,
 	for(i = 0; i < 100; ++i) {
 		mapdef->walls[i].path = NULL;
 		mapdef->walls[i].surf = NULL;
+		mapdef->walls[i].is_invisible = 0;
 
 		mapdef->floor_ceils[i].floor_path = NULL;
 		mapdef->floor_ceils[i].floor_surf = NULL;
