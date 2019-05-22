@@ -62,9 +62,6 @@ struct thingdef {
 struct mapdef {
 	// Specifies the layout of the world.
 	unsigned int* layout;
-	// An additional array that specifies location of invisible walls.
-	// Rule: if the value is 1, it is a wall. Otherwise, it is not a wall.
-	int* invisible_walls;
 
 	// Assume an upper bound of 100 wall textures.
 	struct walldef walls[100];
