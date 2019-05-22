@@ -23,8 +23,6 @@ struct walldef {
 	char* path;
 	// Defines the texture for this wall.
 	SDL_Surface* surf;
-	// Is this a wall we skip, or should we render?
-	int is_invisible;
 };
 
 // Specifies floor and ceiling textures for a given
@@ -35,6 +33,9 @@ struct floorcielingdef {
 	char* ceil_path;
 	SDL_Surface* floor_surf;
 	SDL_Surface* ceil_surf;
+
+	// If not 0, then we treat this as having an invisible wall.
+	int invisible_wall;
 };
 
 // Defines a "thing" in the world. This is for
