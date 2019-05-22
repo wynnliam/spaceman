@@ -411,6 +411,9 @@ static void cast_single_ray(const int screen_col) {
 
 	update_adjusted_angle();
 
+	// SKY CASTING
+	draw_sky_slice(screen_col);
+
 	z_buffer[screen_col] = 0;
 	get_ray_hit(adj_ray_angle, &hit);
 	if(ray_hit_wall(&hit)) {
@@ -419,9 +422,6 @@ static void cast_single_ray(const int screen_col) {
 		// Computes the angle relative to the player rotation.
 		ray_angle_relative_to_player_rot = abs(adj_ray_angle - player_rot);
 		hit.dist = correct_hit_dist_for_fisheye_effect(hit.dist);
-
-		// SKY CASTING
-		draw_sky_slice(screen_col);
 
 		// WALL CASTING
 		compute_wall_slice_render_data_from_hit_and_screen_col(&hit, screen_col, &wall_slice);
@@ -686,6 +686,8 @@ static void compute_wall_slice_render_data_from_hit_and_screen_col(struct hitinf
 }
 
 static void draw_wall_slice(struct wall_slice* slice) {
+	if(!map->walls[slice->wall_tex].surf)
+		return;
 
 	// Manually copies texture from source to portion of screen.
 	int j;
