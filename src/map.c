@@ -314,7 +314,14 @@ int add_thing_type_1(struct thingdef* thing, struct thing_data* data) {
 }
 
 int add_anim_class_0(struct thingdef* thing) {
-	// Nothing to do here
+	thing->curr_anim = 0;
+	thing->num_anims = 1;
+	thing->anims[0].curr_frame = 0;
+	thing->anims[0].frame_time = 0;
+	thing->anims[0].bRepeats = 1;
+	thing->anims[0].start_x = 0;
+	thing->anims[0].start_y = 0;
+
 	return 1;
 }
 
