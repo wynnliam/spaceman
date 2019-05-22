@@ -114,7 +114,7 @@ int update() {
 					player_y -= (sin128table[player_rot] << 4) >> 7;
 					player_x += (cos128table[player_rot] << 4) >> 7;
 
-					if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
+					if(get_tile(player_x, player_y, map) < 0 || is_position_wall(map, player_x, player_y)) {
 						player_y += (sin128table[player_rot] << 4) >> 7;
 						player_x -= (cos128table[player_rot] << 4) >> 7;
 					}
@@ -124,7 +124,7 @@ int update() {
 					player_y += (sin128table[player_rot] << 4) >> 7;
 					player_x -= (cos128table[player_rot] << 4) >> 7;
 
-					if(get_tile(player_x, player_y, map) < 0 || get_tile(player_x, player_y, map) >= map->num_floor_ceils) {
+					if(get_tile(player_x, player_y, map) < 0 || is_position_wall(map, player_x, player_y)) {
 						player_y -= (sin128table[player_rot] << 4) >> 7;
 						player_x += (cos128table[player_rot] << 4) >> 7;
 					}

@@ -65,6 +65,9 @@ struct thingdef {
 struct mapdef {
 	// Specifies the layout of the world.
 	unsigned int* layout;
+	// Specifies invisible walls in level. If a value is not 0,
+	// it is an invisible wall.
+	int* invisible_walls;
 
 	// Assume an upper bound of 100 wall textures.
 	struct walldef walls[100];
@@ -135,5 +138,7 @@ int clean_mapdef(struct mapdef* to_clean);
 
 struct mapdef* load_map(const char* path, int* player_x, int* player_y, int* player_rot);
 void free_map(struct mapdef** map);
+
+int is_position_wall(struct mapdef* map, int player_x, int player_y);
 
 #endif

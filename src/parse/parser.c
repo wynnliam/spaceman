@@ -305,6 +305,8 @@ void set_curr_attribute_type(char* attribute_name) {
 			curr_attribute_type = ATYPE_INTEGER;
 		else if(strcmp(attribute_name, "is_floor_ciel") == 0)
 			curr_attribute_type = ATYPE_INTEGER;
+		else if(strcmp(attribute_name, "invisible_wall") == 0)
+			curr_attribute_type = ATYPE_INTEGER;
 		else if(strcmp(attribute_name, "tex_0") == 0)
 			curr_attribute_type = ATYPE_STRING;
 		else if(strcmp(attribute_name, "tex_1") == 0)
@@ -389,6 +391,11 @@ int set_map_data_val(struct map_data* map_data, char* attribute_name, char* attr
 
 		else if(strcmp(attribute_name, "is_floor_ciel") == 0) {
 			map_data->component_head->is_floor_ceil = attrib_val_as_int;
+			result = 1;
+		}
+
+		else if(strcmp(attribute_name, "invisible_wall") == 0) {
+			map_data->component_head->invisible_wall = attrib_val_as_int;
 			result = 1;
 		}
 

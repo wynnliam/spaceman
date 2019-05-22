@@ -14,9 +14,13 @@ struct component {
 	// Done in unit coordinates. That is, x = 1 is 64 pixels,
 	// x = 2 is 128 pixels, etc.
 	int x, y, w, h;
+
 	// Does the component represent a series of walls, or floor/ceiling
 	// pairs?
 	int is_floor_ceil;
+	// Assuming this component is a floor_ceil, should it have an invisible wall?
+	int invisible_wall;
+
 	char* tex_0;
 	char* tex_1;
 

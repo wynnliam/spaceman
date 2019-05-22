@@ -59,11 +59,14 @@ int build_mapdef_from_map_data(struct mapdef* mapdef, struct map_data* map_data,
 	mapdef->map_w = bounds.x_max - bounds.x_min;
 	mapdef->map_h = bounds.y_max - bounds.y_min;
 	mapdef->layout = (unsigned int*)malloc(mapdef->map_w * mapdef->map_h * sizeof(unsigned int));
+	mapdef->invisible_walls = (int*)malloc(mapdef->map_w * mapdef->map_h * sizeof(int));
 
 	int i;
 	// Fills in the entire map with the first walldef.
-	for(i = 0; i < mapdef->map_w * mapdef->map_h; ++i)
+	for(i = 0; i < mapdef->map_w * mapdef->map_h; ++i) {
 		mapdef->layout[i] = 100;
+		mapdef->invisible_walls[i] = 0;
+	}
 
 	for(i = 0; i < 100; ++i) {
 		mapdef->walls[i].path = NULL;
@@ -252,6 +255,7 @@ int place_components_into_mapdef(struct mapdef* map, struct component* component
 					continue;
 
 				map->layout[y * map->map_w + x] = val;
+				map->invisible_walls[y * map->map_w + x] = curr->invisible_wall;
 			}
 		}
 
@@ -470,6 +474,11 @@ int clean_mapdef(struct mapdef* to_clean) {
 		to_clean->layout = NULL;
 	}
 
+	if(to_clean->invisible_walls) {
+		free(to_clean->invisible_walls);
+		to_clean->invisible_walls = NULL;
+	}
+
 	if(to_clean->sky_surf) {
 		SDL_FreeSurface(to_clean->sky_surf);
 		to_clean->sky_surf = NULL;
@@ -566,4 +575,16 @@ void free_map(struct mapdef** map) {
 
 	free(*map);
 	*map = NULL;
+}
+
+int is_position_wall(struct mapdef* map, int player_x, int player_y) {
+	int map_w = map->map_w;
+	int index;
+
+	player_x = player_x >> 6;
+	player_y = player_y >> 6;
+
+	index = player_y * map_w + player_x;
+
+	return map->layout[index] >= map->num_floor_ceils || map->invisible_walls[index];
 }

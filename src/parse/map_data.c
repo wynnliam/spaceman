@@ -19,6 +19,8 @@ int add_component(struct map_data* add_to) {
 	to_add->h = 0;
 
 	to_add->is_floor_ceil = 0;
+	to_add->invisible_wall = 0;
+
 	to_add->tex_0 = NULL;
 	to_add->tex_1 = NULL;
 
