@@ -198,7 +198,7 @@ static void draw_wall_slice(struct wall_slice*, struct hitinfo* hit);
 static void draw_column_of_floor_and_ceiling_from_wall(struct wall_slice*);
 static int compute_row_for_bottom_of_wall_slice(struct wall_slice*);
 static void project_screen_pixel_to_world_space(struct floor_ceiling_pixel*);
-static void draw_floor_and_ceiling_pixels(struct floor_ceiling_pixel*);
+static void draw_floor_and_ceiling_pixels(struct floor_ceiling_pixel*, int);
 
 static void draw_things();
 static void project_thing_pos_onto_screen(const int[2], int[2]);
@@ -736,11 +736,18 @@ static void draw_column_of_floor_and_ceiling_from_wall(struct wall_slice* wall_s
 	// Data needed to render a floor (and corresponding ceiling pixel).
 	struct floor_ceiling_pixel floor_ceil_pixel;
 
+	int pixel_dist;
+
 	int j;
 	for(j = compute_row_for_bottom_of_wall_slice(wall_slice); j < PROJ_H; ++j) {
 		floor_ceil_pixel.screen_row = j;
 		floor_ceil_pixel.screen_col = wall_slice->screen_col;
 		project_screen_pixel_to_world_space(&floor_ceil_pixel);
+
+		pixel_dist = get_dist_sqrd(floor_ceil_pixel.world_space_coordinates[0],
+								   floor_ceil_pixel.world_space_coordinates[1],
+								   player_x, player_y);
+		pixel_dist = correct_hit_dist_for_fisheye_effect((int)sqrt(pixel_dist));
 
 		floor_ceil_pixel.texture  = get_tile(floor_ceil_pixel.world_space_coordinates[0],
 								   			 floor_ceil_pixel.world_space_coordinates[1],
@@ -749,7 +756,7 @@ static void draw_column_of_floor_and_ceiling_from_wall(struct wall_slice* wall_s
 		if(floor_ceil_pixel.texture >= map->num_floor_ceils)
 			continue;
 
-		draw_floor_and_ceiling_pixels(&floor_ceil_pixel);
+		draw_floor_and_ceiling_pixels(&floor_ceil_pixel, pixel_dist);
 	}
 }
 
@@ -766,7 +773,7 @@ static void project_screen_pixel_to_world_space(struct floor_ceiling_pixel* floo
 	floor_ceil_pixel->world_space_coordinates[1] = player_y - ((dist_to_point * sin128table[adj_ray_angle]) >> 7);
 }
 
-static void draw_floor_and_ceiling_pixels(struct floor_ceiling_pixel* floor_ceil_pixel) {
+static void draw_floor_and_ceiling_pixels(struct floor_ceiling_pixel* floor_ceil_pixel, int pixel_dist) {
 	int texture_x = floor_ceil_pixel->world_space_coordinates[0] % UNIT_SIZE;
 	int texture_y = floor_ceil_pixel->world_space_coordinates[1] % UNIT_SIZE;
 	int floor_screen_pixel = floor_ceil_pixel->screen_row * PROJ_W + floor_ceil_pixel->screen_col;
@@ -774,12 +781,14 @@ static void draw_floor_and_ceiling_pixels(struct floor_ceiling_pixel* floor_ceil
 
 	// Put floor pixel.
 	if(map->floor_ceils[floor_ceil_pixel->texture].floor_surf) {
-		floor_ceiling_pixels[floor_screen_pixel] = get_pixel(map->floor_ceils[floor_ceil_pixel->texture].floor_surf, texture_x, texture_y);
+		floor_ceiling_pixels[floor_screen_pixel] = apply_fog(get_pixel(map->floor_ceils[floor_ceil_pixel->texture].floor_surf, texture_x, texture_y),
+															 pixel_dist);
 	}
 
 	// Put ceiling pixel.
 	if(map->floor_ceils[floor_ceil_pixel->texture].ceil_surf) {
-		floor_ceiling_pixels[ceiling_screen_pixel] = get_pixel(map->floor_ceils[floor_ceil_pixel->texture].ceil_surf, texture_x, texture_y);
+		floor_ceiling_pixels[ceiling_screen_pixel] = apply_fog(get_pixel(map->floor_ceils[floor_ceil_pixel->texture].ceil_surf, texture_x, texture_y),
+															   pixel_dist);
 	}
 }
 
