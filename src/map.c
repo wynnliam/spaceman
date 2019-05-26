@@ -461,6 +461,9 @@ int initialize_map_properties(struct mapdef* map, struct map_data* map_data) {
 	}
 
 	map->use_fog = map_data->use_fog;
+	map->fog_r = map_data->fog_r;
+	map->fog_g = map_data->fog_g;
+	map->fog_b = map_data->fog_b;
 
 	return 1;
 }

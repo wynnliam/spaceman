@@ -55,6 +55,7 @@ struct map_data {
 
 	// 0 -- Do not use fog. 1 -- Use fog
 	int use_fog;
+	int fog_r, fog_g, fog_b;
 };
 
 /*

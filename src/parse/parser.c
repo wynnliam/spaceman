@@ -21,6 +21,9 @@ struct map_data* parse_to_map_data(FILE* map_file) {
 
 	// By default, we do not use fog.
 	result->use_fog = 0;
+	result->fog_r = 0;
+	result->fog_g = 0;
+	result->fog_b = 0;
 
 	reset();
 	while(1) {

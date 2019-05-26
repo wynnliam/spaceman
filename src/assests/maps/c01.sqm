@@ -8,6 +8,9 @@ properties {
 	sky_tex = "./src/assests/textures/skybox/sky01.bmp";
 
 	use_fog = "1";
+	#fog_r = "255";
+	#fog_g = "0";
+	#fog_b = "0";
 }
 
 # Player spawn.

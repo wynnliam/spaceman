@@ -31,36 +31,6 @@ int get_dist_sqrd(int x1, int y1, int x2, int y2) {
 	return d_x + d_y;
 }
 
-static unsigned int apply_fog(unsigned int pixel_color, const unsigned int dist) {
-	unsigned char fog_factor, base_factor;
-	unsigned char* color = (unsigned char*)&pixel_color;
-
-	unsigned char fog_r, fog_g, fog_b;
-
-	fog_r = 255;
-	fog_g = 255;
-	fog_b = 255;
-
-	if(dist <= 100) {
-		fog_factor = 0;
-	} else if(dist <= 200) {
-		fog_factor = 32;
-	} else if(dist <= 300) {
-		fog_factor = 64;
-	} else if(dist <= 400) {
-		fog_factor = 96;
-	} else {
-		fog_factor = 128;
-	}
-
-	base_factor = 128 - fog_factor;
-
-	color[0] = ((fog_r * fog_factor) + (color[0] * base_factor)) >> 7;
-	color[1] = ((fog_g * fog_factor) + (color[1] * base_factor)) >> 7;
-	color[2] = ((fog_b * fog_factor) + (color[2] * base_factor)) >> 7;
-
-	return *(unsigned int*)color;
-}
 
 static unsigned int get_pixel(SDL_Surface* surface, int x, int y) {
 	if(!surface)
@@ -143,6 +113,37 @@ struct thing_column_render_data {
 	const SDL_Rect* dest;
 	const int* frame_offset;
 };
+
+static unsigned int apply_fog(unsigned int pixel_color, const unsigned int dist) {
+	unsigned char fog_factor, base_factor;
+	unsigned char* color = (unsigned char*)&pixel_color;
+
+	unsigned char fog_r, fog_g, fog_b;
+
+	fog_r = (unsigned char)map->fog_r;
+	fog_g = (unsigned char)map->fog_g;
+	fog_b = (unsigned char)map->fog_b;
+
+	if(dist <= 100) {
+		fog_factor = 0;
+	} else if(dist <= 200) {
+		fog_factor = 32;
+	} else if(dist <= 300) {
+		fog_factor = 64;
+	} else if(dist <= 400) {
+		fog_factor = 96;
+	} else {
+		fog_factor = 128;
+	}
+
+	base_factor = 128 - fog_factor;
+
+	color[0] = ((fog_r * fog_factor) + (color[0] * base_factor)) >> 7;
+	color[1] = ((fog_g * fog_factor) + (color[1] * base_factor)) >> 7;
+	color[2] = ((fog_b * fog_factor) + (color[2] * base_factor)) >> 7;
+
+	return *(unsigned int*)color;
+}
 
 static void compute_lookup_vals_for_angle(const int);
 static void compute_tan_lookup_val_for_angle(const int);
