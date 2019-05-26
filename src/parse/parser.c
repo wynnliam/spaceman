@@ -298,6 +298,12 @@ void set_curr_attribute_type(char* attribute_name) {
 			curr_attribute_type = ATYPE_STRING;
 		else if(strcmp(attribute_name, "use_fog") == 0)
 			curr_attribute_type = ATYPE_INTEGER;
+		else if(strcmp(attribute_name, "fog_r") == 0)
+			curr_attribute_type = ATYPE_INTEGER;
+		else if(strcmp(attribute_name, "fog_g") == 0)
+			curr_attribute_type = ATYPE_INTEGER;
+		else if(strcmp(attribute_name, "fog_b") == 0)
+			curr_attribute_type = ATYPE_INTEGER;
 		else
 			curr_attribute_type = ATYPE_INVALID;
 	}
@@ -374,6 +380,21 @@ int set_map_data_val(struct map_data* map_data, char* attribute_name, char* attr
 
 		else if(strcmp(attribute_name, "use_fog") == 0) {
 			map_data->use_fog = attrib_val_as_int;
+			result = 1;
+		}
+
+		else if(strcmp(attribute_name, "fog_r") == 0) {
+			map_data->fog_r = attrib_val_as_int;
+			result = 1;
+		}
+
+		else if(strcmp(attribute_name, "fog_g") == 0) {
+			map_data->fog_g = attrib_val_as_int;
+			result = 1;
+		}
+
+		else if(strcmp(attribute_name, "fog_b") == 0) {
+			map_data->fog_b = attrib_val_as_int;
 			result = 1;
 		}
 

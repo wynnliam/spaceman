@@ -138,9 +138,9 @@ static unsigned int apply_fog(unsigned int pixel_color, const unsigned int dist)
 
 	base_factor = 128 - fog_factor;
 
-	color[0] = ((fog_r * fog_factor) + (color[0] * base_factor)) >> 7;
+	color[2] = ((fog_r * fog_factor) + (color[2] * base_factor)) >> 7;
 	color[1] = ((fog_g * fog_factor) + (color[1] * base_factor)) >> 7;
-	color[2] = ((fog_b * fog_factor) + (color[2] * base_factor)) >> 7;
+	color[0] = ((fog_b * fog_factor) + (color[0] * base_factor)) >> 7;
 
 	return *(unsigned int*)color;
 }
