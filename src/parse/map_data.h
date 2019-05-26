@@ -52,6 +52,9 @@ struct map_data {
 
 	// List of things
 	struct thing_data* thing_head;
+
+	// 0 -- Do not use fog. 1 -- Use fog
+	int use_fog;
 };
 
 /*

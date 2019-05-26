@@ -19,6 +19,9 @@ struct map_data* parse_to_map_data(FILE* map_file) {
 	result->component_head = NULL;
 	result->thing_head = NULL;
 
+	// By default, we do not use fog.
+	result->use_fog = 0;
+
 	reset();
 	while(1) {
 		c = fgetc(map_file);
@@ -290,6 +293,8 @@ void set_curr_attribute_type(char* attribute_name) {
 			curr_attribute_type = ATYPE_STRING;
 		else if(strcmp(attribute_name, "sky_tex") == 0)
 			curr_attribute_type = ATYPE_STRING;
+		else if(strcmp(attribute_name, "use_fog") == 0)
+			curr_attribute_type = ATYPE_INTEGER;
 		else
 			curr_attribute_type = ATYPE_INVALID;
 	}
@@ -361,6 +366,11 @@ int set_map_data_val(struct map_data* map_data, char* attribute_name, char* attr
 		else if(strcmp(attribute_name, "sky_tex") == 0) {
 			map_data->sky_tex = (char*)malloc(strlen(attribute_val) + 1);
 			strcpy(map_data->sky_tex, attribute_val);
+			result = 1;
+		}
+
+		else if(strcmp(attribute_name, "use_fog") == 0) {
+			map_data->use_fog = attrib_val_as_int;
 			result = 1;
 		}
 

@@ -460,7 +460,7 @@ int initialize_map_properties(struct mapdef* map, struct map_data* map_data) {
 		map->sky_surf = NULL;
 	}
 
-	map->use_fog = 0;
+	map->use_fog = map_data->use_fog;
 
 	return 1;
 }
