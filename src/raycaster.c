@@ -720,6 +720,8 @@ static void draw_wall_slice(struct wall_slice* slice, struct hitinfo* hit) {
 	if(!map->walls[slice->wall_tex].surf)
 		return;
 
+	int fog_dist  = map->use_fog ? hit->dist : 0;
+
 	// Manually copies texture from source to portion of screen.
 	int j;
 	for(j = 0; j < slice->screen_height; ++j) {
@@ -728,7 +730,7 @@ static void draw_wall_slice(struct wall_slice* slice, struct hitinfo* hit) {
 			continue;
 
 		raycast_pixels[(j + slice->screen_row) * PROJ_W + slice->screen_col] =
-			apply_fog(get_pixel(map->walls[slice->wall_tex].surf, slice->tex_col, (j << 6) / slice->screen_height), hit->dist);
+			apply_fog(get_pixel(map->walls[slice->wall_tex].surf, slice->tex_col, (j << 6) / slice->screen_height), fog_dist);
 	}
 }
 
@@ -744,10 +746,14 @@ static void draw_column_of_floor_and_ceiling_from_wall(struct wall_slice* wall_s
 		floor_ceil_pixel.screen_col = wall_slice->screen_col;
 		project_screen_pixel_to_world_space(&floor_ceil_pixel);
 
-		pixel_dist = get_dist_sqrd(floor_ceil_pixel.world_space_coordinates[0],
-								   floor_ceil_pixel.world_space_coordinates[1],
-								   player_x, player_y);
-		pixel_dist = correct_hit_dist_for_fisheye_effect((int)sqrt(pixel_dist));
+		if(map->use_fog) {
+			pixel_dist = get_dist_sqrd(floor_ceil_pixel.world_space_coordinates[0],
+									   floor_ceil_pixel.world_space_coordinates[1],
+									   player_x, player_y);
+			pixel_dist = correct_hit_dist_for_fisheye_effect((int)sqrt(pixel_dist));
+		} else {
+			pixel_dist = 0;
+		}
 
 		floor_ceil_pixel.texture  = get_tile(floor_ceil_pixel.world_space_coordinates[0],
 								   			 floor_ceil_pixel.world_space_coordinates[1],
@@ -935,7 +941,10 @@ static void draw_column_of_thing_texture(struct thing_column_render_data* thing_
 
 	int screen_row;
 
-	int thing_dist_sqrt = (int)sqrt(things_sorted[thing_column_data->thing_sorted_index]->dist);
+	int thing_dist_sqrt = 0;
+
+	if(map->use_fog)
+		thing_dist_sqrt = (int)sqrt(things_sorted[thing_column_data->thing_sorted_index]->dist);
 
 	int k;
 	for(k = 0; k < thing_column_data->dest->h; ++k) {

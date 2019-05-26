@@ -95,6 +95,9 @@ struct mapdef {
 
 	// Stores the number of things in the world.
 	unsigned int num_things;
+
+	// If 0 -- Do not use fog. If not 0 -- Use fog.
+	int use_fog;
 };
 
 /*
