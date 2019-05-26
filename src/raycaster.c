@@ -31,6 +31,37 @@ int get_dist_sqrd(int x1, int y1, int x2, int y2) {
 	return d_x + d_y;
 }
 
+static unsigned int apply_fog(unsigned int pixel_color, const unsigned int dist) {
+	unsigned char fog_factor, base_factor;
+	unsigned char* color = (unsigned char*)&pixel_color;
+
+	unsigned char fog_r, fog_g, fog_b;
+
+	fog_r = 255;
+	fog_g = 255;
+	fog_b = 255;
+
+	if(dist <= 100) {
+		fog_factor = 0;
+	} else if(dist <= 200) {
+		fog_factor = 32;
+	} else if(dist <= 300) {
+		fog_factor = 64;
+	} else if(dist <= 400) {
+		fog_factor = 96;
+	} else {
+		fog_factor = 128;
+	}
+
+	base_factor = 128 - fog_factor;
+
+	color[0] = ((fog_r * fog_factor) + (color[0] * base_factor)) >> 7;
+	color[1] = ((fog_g * fog_factor) + (color[1] * base_factor)) >> 7;
+	color[2] = ((fog_b * fog_factor) + (color[2] * base_factor)) >> 7;
+
+	return *(unsigned int*)color;
+}
+
 static unsigned int get_pixel(SDL_Surface* surface, int x, int y) {
 	if(!surface)
 		return 0;
@@ -162,7 +193,7 @@ static unsigned int correct_hit_dist_for_fisheye_effect(const int);
 static void draw_sky_slice(const int);
 
 static void compute_wall_slice_render_data_from_hit_and_screen_col(struct hitinfo*, const int, struct wall_slice*);
-static void draw_wall_slice(struct wall_slice*);
+static void draw_wall_slice(struct wall_slice*, struct hitinfo* hit);
 
 static void draw_column_of_floor_and_ceiling_from_wall(struct wall_slice*);
 static int compute_row_for_bottom_of_wall_slice(struct wall_slice*);
@@ -425,7 +456,7 @@ static void cast_single_ray(const int screen_col) {
 
 		// WALL CASTING
 		compute_wall_slice_render_data_from_hit_and_screen_col(&hit, screen_col, &wall_slice);
-		draw_wall_slice(&wall_slice);
+		draw_wall_slice(&wall_slice, &hit);
 
 		// FLOOR AND CEILING CASTING
 		draw_column_of_floor_and_ceiling_from_wall(&wall_slice);
@@ -685,7 +716,7 @@ static void compute_wall_slice_render_data_from_hit_and_screen_col(struct hitinf
 	slice->tex_col = hit->is_horiz ? (hit->hit_pos[0] % UNIT_SIZE) : (hit->hit_pos[1] % UNIT_SIZE);
 }
 
-static void draw_wall_slice(struct wall_slice* slice) {
+static void draw_wall_slice(struct wall_slice* slice, struct hitinfo* hit) {
 	if(!map->walls[slice->wall_tex].surf)
 		return;
 
@@ -697,7 +728,7 @@ static void draw_wall_slice(struct wall_slice* slice) {
 			continue;
 
 		raycast_pixels[(j + slice->screen_row) * PROJ_W + slice->screen_col] =
-			get_pixel(map->walls[slice->wall_tex].surf, slice->tex_col, (j << 6) / slice->screen_height);
+			apply_fog(get_pixel(map->walls[slice->wall_tex].surf, slice->tex_col, (j << 6) / slice->screen_height), hit->dist);
 	}
 }
 
