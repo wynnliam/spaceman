@@ -935,6 +935,8 @@ static void draw_column_of_thing_texture(struct thing_column_render_data* thing_
 
 	int screen_row;
 
+	int thing_dist_sqrt = (int)sqrt(things_sorted[thing_column_data->thing_sorted_index]->dist);
+
 	int k;
 	for(k = 0; k < thing_column_data->dest->h; ++k) {
 		screen_row = k + thing_column_data->dest->y;
@@ -946,7 +948,7 @@ static void draw_column_of_thing_texture(struct thing_column_render_data* thing_
 		t_color = get_pixel(things_sorted[thing_column_data->thing_sorted_index]->surf, t_x, t_y);
 		// Only put a pixel if it is not transparent.
 		if(thing_pixel_is_not_transparent(t_color))
-			thing_pixels[(screen_row) * PROJ_W + thing_column_data->screen_column] = t_color;
+			thing_pixels[(screen_row) * PROJ_W + thing_column_data->screen_column] = apply_fog(t_color, thing_dist_sqrt);
 	}
 }
 
